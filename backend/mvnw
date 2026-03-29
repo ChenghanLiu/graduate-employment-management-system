@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+if [ -n "$MAVEN_HOME" ] && [ -x "$MAVEN_HOME/bin/mvn" ]; then
+  exec "$MAVEN_HOME/bin/mvn" "$@"
+fi
+
+LOCAL_MAVEN="/Users/liuchenghan/.m2/wrapper/dists/apache-maven-3.9.12-bin/5nmfsn99br87k5d4ajlekdq10k/apache-maven-3.9.12/bin/mvn"
+if [ -x "$LOCAL_MAVEN" ]; then
+  exec "$LOCAL_MAVEN" "$@"
+fi
+
+exec mvn "$@"
+

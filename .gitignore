@@ -1,0 +1,12 @@
+.DS_Store
+.idea/
+.m2/
+node_modules/
+dist/
+target/
+.mvn/wrapper/maven-wrapper.jar
+backend/target/
+backend/.mvn/repository/
+backend/stubs/classes/
+frontend/node_modules/
+frontend/dist/
