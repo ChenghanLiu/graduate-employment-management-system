@@ -4,23 +4,88 @@
 
 系统采用单体架构，仓库按前后端分离组织：
 
-- `backend`：提供 REST API
-- `frontend`：提供 Vue 单页应用骨架
-- `docker`：提供本地 MySQL 运行环境
+- `backend`：提供 REST API 与业务模块骨架
+- `frontend`：保留前端工程入口，当前不展开复杂页面实现
+- `docker`：提供本地 MySQL 开发容器与初始化脚本
+- `sql`：存放数据库初始化与迭代 SQL
 
-## 后端设计
+## 端侧边界
 
-- 技术栈：Spring Boot 3 + Maven + Java 17 + MyBatis-Plus + MySQL 8
-- 包结构：`controller`、`service`、`mapper`、`entity`、`dto`、`vo`、`config`、`common`、`security`、`module`
-- 当前仅开放 `/api/health` 用于基础可用性检查
+### 管理端
 
-## 前端设计
+管理端面向管理员与就业管理老师，承担审核、发布、统筹职责。
 
-- 技术栈：Vue 3 + Vite + Vue Router
-- 当前仅保留首页与基础布局，后续迭代再接入业务模块
+- 可访问学生、企业、岗位、就业、公告等全局业务数据
+- 可以执行企业审核、岗位监管、就业审核、公告发布
+- 后续权限控制以角色与菜单授权为主，不在本轮展开细粒度权限树
 
-## Docker 预留
+### 学生/企业端
 
-- 当前仅提供 MySQL 开发容器
-- 后续可在 `docker` 目录继续补充后端与前端镜像定义
+学生端与企业端为业务提交侧，不承担管理职责。
 
+- 学生端关注个人档案、简历、投递、就业填报
+- 企业端关注企业资料、岗位发布、投递处理
+- 两端仅操作本账号所属业务数据，审核结果由管理端回写
+
+## 后端模块设计
+
+技术栈保持不变：Spring Boot 3 + Maven + Java 17 + MyBatis-Plus + MySQL 8。
+
+在现有 `common`、`config`、`entity`、`mapper` 等基础包之外，本轮预留 `modules` 业务包：
+
+- `modules.student`：学生档案领域
+- `modules.resume`：简历主表与简历子表领域
+- `modules.enterprise`：企业档案与企业审核领域
+- `modules.job`：岗位发布与投递领域
+- `modules.employment`：就业记录与证明材料领域
+- `modules.announcement`：公告发布领域
+
+本轮仅做模块边界落位，不补充 Controller、Service、Mapper 的大规模样板代码。
+
+## 菜单结构设计
+
+以下为结构设计，采用中文业务化命名，仅作为后续前端与权限配置依据。
+
+### 管理端菜单
+
+#### `ADMIN` / `COUNSELOR`
+
+- 工作台
+- 学生管理
+- 简历管理
+- 企业管理
+- 岗位管理
+- 投递管理
+- 就业管理
+- 公告管理
+- 系统管理
+
+### 学生端菜单
+
+#### `STUDENT`
+
+- 首页
+- 个人信息
+- 我的简历
+- 岗位浏览
+- 我的投递
+- 就业填报
+- 公告通知
+
+### 企业端菜单
+
+#### `ENTERPRISE`
+
+- 首页
+- 企业资料
+- 岗位发布
+- 收到的简历
+- 录用处理
+- 公告通知
+
+## 设计约束
+
+- 优先保证数据库模型清晰、模块边界清晰
+- 表结构遵循统一 `status`、`create_time`、`update_time` 风格
+- 关联关系以业务主键和索引保障为主，避免危险级联删除
+- 本轮不引入复杂工作流、审批树、组织树

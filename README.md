@@ -1,6 +1,6 @@
 # 基于 SpringBoot 的毕业生就业管理系统
 
-本仓库为第一轮初始化版本，仅包含单体架构项目骨架，前后端分离目录、基础 RBAC 数据表、MySQL 本地开发容器以及可启动的后端健康检查接口。
+本仓库当前包含毕业生就业管理系统后端与前端工程，其中后端已覆盖学生、企业、岗位、投递、就业登记、公告、统计，以及 round 9 所需的管理端补齐接口。
 
 ## 目录说明
 
@@ -33,11 +33,16 @@ docker compose up -d
 ```bash
 cd backend
 ./mvnw spring-boot:run
+
+# 如本地未启动 MySQL，可直接使用内存库联调
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 默认访问：
 
 - 健康检查：`http://localhost:8080/api/health`
+- Swagger UI：`http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON：`http://localhost:8080/v3/api-docs`
 
 说明：
 
@@ -50,6 +55,48 @@ cd backend
 - `DB_NAME`
 - `DB_USERNAME`
 - `DB_PASSWORD`
+
+## 初始账号与轻量 RBAC 说明
+
+当前项目仍沿用 round 8 的轻量请求头 RBAC，不走完整登录态。联调时通过 `X-User-Id` 或 `X-User-Role` 指定当前身份。
+
+默认种子账号：
+
+- `admin` / `Admin@123456`，用户 ID `9001`，角色 `ADMIN`
+- `teacher_demo` / `Teacher@123456`，用户 ID `3001`，角色 `EMPLOYMENT_TEACHER`
+- `counselor_demo` / `Counselor@123456`，用户 ID `3002`，角色 `COUNSELOR`
+- `student_demo` / `Student@123456`，用户 ID `1001`，角色 `STUDENT`
+- `enterprise_demo` / `Enterprise@123456`，用户 ID `2001`，角色 `ENTERPRISE`
+
+示例：
+
+```bash
+curl -H "X-User-Id: 9001" http://localhost:8080/api/admin/users
+curl -H "X-User-Id: 3001" http://localhost:8080/api/statistics/overview
+```
+
+说明：
+
+- 当前密码为交付前简化策略，管理端新增用户时如未传 `password`，默认写入 `ChangeMe123!`
+- `/api/admin/**` 仅管理员可访问；教师审核类接口保留 `COUNSELOR / EMPLOYMENT_TEACHER / ADMIN`
+
+## 本地验证建议
+
+```bash
+cd backend
+./mvnw clean install
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+建议至少验证：
+
+- `GET /api/health`
+- `GET /api/admin/users`
+- `PUT /api/admin/users/{id}/roles`
+- `GET /api/admin/enterprises`
+- `GET /api/admin/students`
+- `POST /api/admin/announcements`
+- `GET /api/admin/dashboard/overview`
 
 ### 3. 启动前端
 
