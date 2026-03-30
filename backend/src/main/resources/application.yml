@@ -1,19 +1,29 @@
 server:
   port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
     name: employment-system-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:employment_system}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:employment_system}?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&sessionVariables=character_set_client=utf8mb4,character_set_connection=utf8mb4,character_set_results=utf8mb4,collation_connection=utf8mb4_unicode_ci&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME:employment_user}
     password: ${DB_PASSWORD:employment_pass}
     hikari:
+      connection-timeout: 3000
       initialization-fail-timeout: 0
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
   jackson:
     time-zone: Asia/Shanghai
     date-format: yyyy-MM-dd HH:mm:ss
+  sql:
+    init:
+      enabled: false
 
 mybatis-plus:
   configuration:
@@ -26,3 +36,16 @@ logging:
   level:
     com.example.employment: info
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  current-user:
+    student-id: ${APP_CURRENT_STUDENT_USER_ID:1001}
+    enterprise-id: ${APP_CURRENT_ENTERPRISE_USER_ID:2001}
+    counselor-id: ${APP_CURRENT_COUNSELOR_USER_ID:3002}
+    employment-teacher-id: ${APP_CURRENT_EMPLOYMENT_TEACHER_USER_ID:3001}
+    admin-id: ${APP_CURRENT_ADMIN_USER_ID:9001}

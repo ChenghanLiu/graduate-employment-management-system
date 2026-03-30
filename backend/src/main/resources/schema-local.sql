@@ -1,0 +1,210 @@
+CREATE TABLE IF NOT EXISTS sys_user (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(64) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    real_name VARCHAR(64) DEFAULT NULL,
+    phone VARCHAR(32) DEFAULT NULL,
+    email VARCHAR(128) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (username)
+);
+
+CREATE TABLE IF NOT EXISTS sys_role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    role_code VARCHAR(64) NOT NULL,
+    role_name VARCHAR(64) NOT NULL,
+    remark VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (role_code)
+);
+
+CREATE TABLE IF NOT EXISTS sys_user_role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, role_id)
+);
+
+CREATE TABLE IF NOT EXISTS student_profile (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    student_no VARCHAR(32) NOT NULL,
+    gender TINYINT DEFAULT NULL,
+    college_name VARCHAR(128) NOT NULL,
+    major_name VARCHAR(128) NOT NULL,
+    class_name VARCHAR(128) DEFAULT NULL,
+    education_level VARCHAR(64) NOT NULL,
+    graduation_year SMALLINT NOT NULL,
+    native_place VARCHAR(128) DEFAULT NULL,
+    employment_status TINYINT NOT NULL DEFAULT 0,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id),
+    UNIQUE (student_no)
+);
+
+CREATE TABLE IF NOT EXISTS resume (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    student_id BIGINT NOT NULL,
+    resume_name VARCHAR(128) NOT NULL,
+    job_intention VARCHAR(255) DEFAULT NULL,
+    expected_city VARCHAR(128) DEFAULT NULL,
+    expected_salary VARCHAR(64) DEFAULT NULL,
+    self_evaluation VARCHAR(1000) DEFAULT NULL,
+    completion_rate TINYINT NOT NULL DEFAULT 0,
+    is_default TINYINT NOT NULL DEFAULT 1,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (student_id)
+);
+
+CREATE TABLE IF NOT EXISTS resume_education (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    resume_id BIGINT NOT NULL,
+    school_name VARCHAR(128) NOT NULL,
+    major_name VARCHAR(128) NOT NULL,
+    education_level VARCHAR(64) NOT NULL,
+    start_date DATE DEFAULT NULL,
+    end_date DATE DEFAULT NULL,
+    description VARCHAR(1000) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS resume_project (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    resume_id BIGINT NOT NULL,
+    project_name VARCHAR(128) NOT NULL,
+    role_name VARCHAR(128) DEFAULT NULL,
+    start_date DATE DEFAULT NULL,
+    end_date DATE DEFAULT NULL,
+    description VARCHAR(1000) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS resume_skill (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    resume_id BIGINT NOT NULL,
+    skill_name VARCHAR(128) NOT NULL,
+    skill_level TINYINT DEFAULT NULL,
+    description VARCHAR(500) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS enterprise_profile (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    enterprise_name VARCHAR(255) NOT NULL,
+    credit_code VARCHAR(64) NOT NULL,
+    industry_name VARCHAR(128) DEFAULT NULL,
+    enterprise_scale VARCHAR(64) DEFAULT NULL,
+    contact_name VARCHAR(64) NOT NULL,
+    contact_phone VARCHAR(32) NOT NULL,
+    contact_email VARCHAR(128) DEFAULT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    introduction VARCHAR(1000) DEFAULT NULL,
+    review_status TINYINT NOT NULL DEFAULT 0,
+    review_remark VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id),
+    UNIQUE (credit_code)
+);
+
+CREATE TABLE IF NOT EXISTS job_post (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    enterprise_id BIGINT NOT NULL,
+    job_title VARCHAR(128) NOT NULL,
+    job_category VARCHAR(128) DEFAULT NULL,
+    work_city VARCHAR(128) NOT NULL,
+    education_requirement VARCHAR(64) DEFAULT NULL,
+    salary_min DECIMAL(10, 2) DEFAULT NULL,
+    salary_max DECIMAL(10, 2) DEFAULT NULL,
+    salary_remark VARCHAR(64) DEFAULT NULL,
+    hiring_count INT NOT NULL DEFAULT 1,
+    job_description VARCHAR(2000) DEFAULT NULL,
+    deadline DATE DEFAULT NULL,
+    post_status TINYINT NOT NULL DEFAULT 0,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS job_application (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    job_post_id BIGINT NOT NULL,
+    student_id BIGINT NOT NULL,
+    resume_id BIGINT NOT NULL,
+    application_status TINYINT NOT NULL DEFAULT 0,
+    apply_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    processed_time TIMESTAMP DEFAULT NULL,
+    remark VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (job_post_id, student_id)
+);
+
+CREATE TABLE IF NOT EXISTS employment_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    student_id BIGINT NOT NULL,
+    job_post_id BIGINT DEFAULT NULL,
+    enterprise_id BIGINT DEFAULT NULL,
+    employment_status TINYINT NOT NULL,
+    employment_type VARCHAR(64) NOT NULL,
+    company_name VARCHAR(255) NOT NULL,
+    job_title VARCHAR(128) NOT NULL,
+    work_city VARCHAR(128) DEFAULT NULL,
+    contract_start_date DATE DEFAULT NULL,
+    salary_amount DECIMAL(10, 2) DEFAULT NULL,
+    report_source VARCHAR(64) DEFAULT NULL,
+    review_status TINYINT NOT NULL DEFAULT 0,
+    review_remark VARCHAR(255) DEFAULT NULL,
+    reviewer_user_id BIGINT DEFAULT NULL,
+    reviewed_time TIMESTAMP DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (student_id)
+);
+
+CREATE TABLE IF NOT EXISTS employment_attachment (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employment_record_id BIGINT NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_url VARCHAR(500) NOT NULL,
+    file_type VARCHAR(64) NOT NULL,
+    remark VARCHAR(255) DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 1,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS announcement (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content CLOB,
+    type VARCHAR(64) NOT NULL,
+    publish_time TIMESTAMP DEFAULT NULL,
+    status TINYINT NOT NULL DEFAULT 0,
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
