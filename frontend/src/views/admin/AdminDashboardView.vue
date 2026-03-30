@@ -36,7 +36,7 @@
       </el-descriptions>
     </PageSection>
 
-    <PageSection title="就业状态统计" description="使用 `statistics/employment-status` 实时展示。" :loading="loading" :empty="!employmentStatusStats.length">
+    <PageSection title="就业状态统计" description="统计信息实时展示。" :loading="loading" :empty="!employmentStatusStats.length">
       <el-table :data="employmentStatusStats" border empty-text="暂无统计数据">
         <el-table-column prop="employmentStatusName" label="就业状态" min-width="180" />
         <el-table-column prop="studentCount" label="学生数量" width="160" />
