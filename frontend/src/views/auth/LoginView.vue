@@ -42,7 +42,7 @@
         </el-form>
         <div class="auth-card__hint">
           <div>登录说明：无需手动切换角色，系统将根据账号所属角色自动进入学生端、企业端或管理端。</div>
-          <div class="muted-text">演示账号示例：`student01` / `enterprise01` / `teacher1` / `admin`</div>
+          <div class="muted-text">演示账号示例：`student1` / `enterprise1` / `teacher1` / `admin`, 密码：123456</div>
         </div>
         <div class="auth-card__footer">
           没有账号？<RouterLink to="/register">立即注册</RouterLink>

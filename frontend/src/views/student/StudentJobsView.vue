@@ -1,7 +1,7 @@
 <template>
   <PageSection
     title="岗位列表"
-    description="浏览开放岗位、查看详情并发起投递，列表保留了答辩展示常用字段。"
+    description="浏览开放岗位、查看详情并发起投递。"
     :loading="loading"
   >
     <el-table :data="jobs" border empty-text="当前暂无开放岗位，企业端发布后会在此实时展示">

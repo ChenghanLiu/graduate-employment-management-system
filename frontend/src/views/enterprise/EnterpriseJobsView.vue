@@ -93,7 +93,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="岗位描述" prop="jobDescription">
-              <el-input v-model="form.jobDescription" type="textarea" :rows="4" placeholder="建议填写岗位职责、技术要求和培养方向，便于答辩时展示岗位信息完整性。" />
+              <el-input v-model="form.jobDescription" type="textarea" :rows="4" placeholder="建议填写岗位职责、技术要求和培养方向。" />
             </el-form-item>
           </el-col>
         </el-row>

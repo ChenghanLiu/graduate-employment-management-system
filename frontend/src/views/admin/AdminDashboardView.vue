@@ -72,7 +72,6 @@
     </PageSection>
   </div>
 </template>
-
 <script setup>
 import { onMounted, ref } from 'vue'
 import PageSection from '../../components/common/PageSection.vue'
@@ -85,6 +84,7 @@ import {
   getJobStatistics,
   getStatisticsOverview
 } from '../../api/statistics'
+import { getCurrentIdentity } from '../../utils/identity'
 
 const adminOverview = ref(null)
 const statisticsOverview = ref(null)
@@ -94,16 +94,34 @@ const announcements = ref([])
 const reviewRecords = ref([])
 const loading = ref(false)
 
+const identity = getCurrentIdentity()
+const role = identity?.role
+
+function isAdmin() {
+  return role === 'ADMIN'
+}
+
+function isTeacher() {
+  return role === 'EMPLOYMENT_TEACHER' || role === 'COUNSELOR'
+}
+
 async function loadData() {
   loading.value = true
 
   try {
-    adminOverview.value = await getAdminDashboardOverview().catch(() => null)
-    statisticsOverview.value = await getStatisticsOverview().catch(() => null)
-    employmentStatusStats.value = await getEmploymentStatusStatistics().catch(() => [])
-    jobStats.value = await getJobStatistics().catch(() => null)
-    announcements.value = await listAdminAnnouncements().catch(() => [])
-    reviewRecords.value = await listEmploymentReviewRecords().catch(() => [])
+    // 统计：老师和管理员都可以
+    if (isAdmin() || isTeacher()) {
+      statisticsOverview.value = await getStatisticsOverview().catch(() => null)
+      employmentStatusStats.value = await getEmploymentStatusStatistics().catch(() => [])
+      jobStats.value = await getJobStatistics().catch(() => null)
+      reviewRecords.value = await listEmploymentReviewRecords().catch(() => [])
+    }
+
+    // 只有管理员才请求 admin-only 数据
+    if (isAdmin()) {
+      adminOverview.value = await getAdminDashboardOverview().catch(() => null)
+      announcements.value = await listAdminAnnouncements().catch(() => [])
+    }
   } finally {
     loading.value = false
   }
